@@ -24,7 +24,11 @@ class todoTests: XCTestCase {
         store.assert(
             .send(.todo(index: 0, action: .checkboxTapped)) {
                 $0.todos[0].isComplete = true
-            }
+            },
+            .do {
+                _ = XCTWaiter.wait(for: [self.expectation(description: "wait")], timeout: 1)
+            },
+            .receive(.todoDelayCompleted)
         )
     }
     
@@ -75,7 +79,13 @@ class todoTests: XCTestCase {
         store.assert(
             .send(.todo(index: 0, action: .checkboxTapped)) {
                 $0.todos[0].isComplete = true
+            },
+            .do {
+                _ = XCTWaiter.wait(for: [self.expectation(description: "wait")], timeout: 1)
+            },
+            .receive(.todoDelayCompleted) {
                 $0.todos.swapAt(0, 1)
+                // $0.todos.swapAt(0, 1)↓と同じ意味
 //                $0.todos = [
 //                  $0.todos[1],
 //                  $0.todos[0],
