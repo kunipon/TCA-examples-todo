@@ -15,7 +15,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Create the SwiftUI view that provides the window contents.
         let contentView = ContentView(
             store: Store(
-                initialState: AppState(),
+                initialState: AppState(
+                    todos: [
+                        Todo(id: UUID(), description: "Milk", isComplete: false),
+                        Todo(id: UUID(), description: "Eggs", isComplete: false),
+                        Todo(id: UUID(), description: "Hand Soap", isComplete: false),
+                    ]
+                ),
                 reducer: appReducer,
                 environment: AppEnvironment()
             )
