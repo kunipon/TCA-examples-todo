@@ -24,4 +24,26 @@ class todoTests: XCTestCase {
             }
         )
     }
+    
+    func testAddTodo() {
+        let store = TestStore(
+            initialState: AppState(),
+            reducer: appReducer,
+            environment: AppEnvironment(
+                uuid: { UUID(uuidString: "DEADBEEF-DEAD-BEEF-DEAD-DEADBEEFDEAD")! }
+            )
+        )
+        
+        store.assert(
+            .send(.addButtonTapped) {
+                $0.todos = [
+                    Todo(
+                        id: UUID(uuidString: "DEADBEEF-DEAD-BEEF-DEAD-DEADBEEFDEAD")!,
+                        description: "",
+                        isComplete: false
+                    )
+                ]
+            }
+        )
+    }
 }
