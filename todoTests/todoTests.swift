@@ -1,26 +1,27 @@
+import ComposableArchitecture
 import XCTest
 @testable import todo
 
 class todoTests: XCTestCase {
-
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    func testCompletingTodo() throws {
+        let store = TestStore(
+            initialState: AppState(
+                todos: [
+                    Todo(
+                        id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!,
+                        description: "Milk",
+                        isComplete: false
+                    )
+                ]
+            ),
+            reducer: appReducer,
+            environment: AppEnvironment()
+        )
+        
+        store.assert(
+            .send(.todo(index: 0, action: .checkboxTapped)) {
+                $0.todos[0].isComplete = true
+            }
+        )
     }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
-
 }

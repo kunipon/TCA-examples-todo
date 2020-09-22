@@ -31,7 +31,7 @@ struct AppState: Equatable {
     var todos: [Todo] = []
 }
 
-enum AppAction {
+enum AppAction: Equatable {
     case addButtonTapped
     case todo(index: Int, action: TodoAction)
 }
