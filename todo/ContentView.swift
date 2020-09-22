@@ -32,16 +32,29 @@ struct AppState: Equatable {
 }
 
 enum AppAction {
+    case addButtonTapped
     case todo(index: Int, action: TodoAction)
 }
 
 struct AppEnvironment {}
 
-let appReducer: Reducer<AppState, AppAction, AppEnvironment> = todoReducer.forEach(
-  state: \.todos,
-  action: /AppAction.todo(index:action:),
-  environment: { _ in TodoEnvironment() }
+let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
+    todoReducer.forEach(
+        state: \.todos,
+        action: /AppAction.todo(index:action:),
+        environment: { _ in TodoEnvironment() }
+    ),
+    Reducer { state, action, _ in
+        switch action {
+        case .addButtonTapped:
+            state.todos.insert(Todo(id: UUID()), at: 0)
+            return .none
+        case .todo(index: _, action: _):
+            return .none
+        }
+    }
 )
+.debug()
 
 struct ContentView: View {
     let store: Store<AppState, AppAction>
@@ -56,6 +69,9 @@ struct ContentView: View {
                     )
                 }
                 .navigationBarTitle("Todos")
+                .navigationBarItems(trailing: Button("Add"){
+                    viewStore.send(.addButtonTapped)
+                })
             }
         }
     }
