@@ -38,6 +38,7 @@ enum AppAction: Equatable {
 }
 
 struct AppEnvironment {
+    var mainQueue: AnySchedulerOf<DispatchQueue>
     var uuid: () -> UUID
 }
 
@@ -57,7 +58,7 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
             struct CancelDelayId: Hashable {}
             
             return Effect(value: .todoDelayCompleted)
-                .debounce(id: CancelDelayId(), for: 1, scheduler: DispatchQueue.main)
+                .debounce(id: CancelDelayId(), for: 1, scheduler: environment.mainQueue)
             // debounceは↓とおなじ意味
             // ---------------
             // .delay(for: 1, scheduler: DispatchQueue.main)
@@ -138,6 +139,7 @@ struct ContentView_Previews: PreviewProvider {
                 ),
                 reducer: appReducer,
                 environment: AppEnvironment(
+                    mainQueue: DispatchQueue.main.eraseToAnyScheduler(),
                     uuid: UUID.init
                 )
             )
