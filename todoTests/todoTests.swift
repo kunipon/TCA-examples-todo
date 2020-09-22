@@ -16,6 +16,7 @@ class todoTests: XCTestCase {
             ),
             reducer: appReducer,
             environment: AppEnvironment(
+                // addButtonTappedアクション以外はuuid作成することないので、ここを通るときは失敗という意味でfatalErrorにしておく
                 uuid: { fatalError("unimplemented") }
             )
         )
