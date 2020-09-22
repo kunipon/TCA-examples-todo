@@ -36,7 +36,9 @@ enum AppAction: Equatable {
     case todo(index: Int, action: TodoAction)
 }
 
-struct AppEnvironment {}
+struct AppEnvironment {
+    var uuid: () -> UUID
+}
 
 let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
     todoReducer.forEach(
@@ -44,10 +46,10 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
         action: /AppAction.todo(index:action:),
         environment: { _ in TodoEnvironment() }
     ),
-    Reducer { state, action, _ in
+    Reducer { state, action, environment in
         switch action {
         case .addButtonTapped:
-            state.todos.insert(Todo(id: UUID()), at: 0)
+            state.todos.insert(Todo(id: environment.uuid()), at: 0)
             return .none
         case .todo(index: _, action: _):
             return .none
@@ -113,7 +115,9 @@ struct ContentView_Previews: PreviewProvider {
                     ]
                 ),
                 reducer: appReducer,
-                environment: AppEnvironment()
+                environment: AppEnvironment(
+                    uuid: UUID.init
+                )
             )
         )
     }

@@ -15,7 +15,7 @@ class todoTests: XCTestCase {
                 ]
             ),
             reducer: appReducer,
-            environment: AppEnvironment()
+            environment: AppEnvironment(uuid: UUID.init)
         )
         
         store.assert(
